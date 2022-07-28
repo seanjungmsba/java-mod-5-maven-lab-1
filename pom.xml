@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- TIP 1: We can use the `mvn validate` command to validate the pom.xml file -->
+
+<!-- TIP 2: We can find out the goals in a specific plugin using the following command:
+`mvn help:describe -Dplugin=org.apache.maven.plugins:maven-compiler-plugin` (run this line on cmd or shell if error occurs in java terminal)
+The command above runs the `describe` goal of the `help` plugin specified as `help:describe`. The `-Dplugin` argument specifies the plugin we want to examine.-->
+
+<!-- TIP 3: Before we compile and package the project, we want to remove the target directory.
+Run the `mvn clean` command to completely remove the target directory.-->
+
+<!-- TIP 4: We can use the `mvn compile` command to tell Maven to compile our project.
+This will create a target directory which will have a `classes` directory containing the compiled class. -->
+
+<!-- TIP 5: We can run the mvn package command to build a JAR file.
+Make sure `maven-jar-plugin` is specified and add configuration to tell Java which .class file to run in the JAR file.
+Navigate to the `target` directory in your terminal or command line and run the following command to start the app:
+`java -jar example-app-1.0-SNAPSHOT.jar` -->
+
+<!-- TIP 6: We can now use the `mvn test` command to run tests -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- groupId: This is usually the group, company, or department creating the project.
+    We generally use the domain name in reverse order.
+    In this case, the company domain is [example.org](http://example.org) so we’ve written it as org.example in the POM file. -->
+    <groupId>org.example</groupId>
+
+    <!-- artifactId: A unique name for the project under the groupId.
+    For example, if the company is creating multiple libraries, each library would have a unique artifactId but the same groupId. -->
+    <artifactId>example-app</artifactId>
+
+    <!-- version: This indicates the current version of the project. Each new release would get a new version. -->
+    <version>1.0-SNAPSHOT</version>
+
+    <!-- The <name> tag is a human-friendly name for the project -->
+    <!-- If it’s not specified, the artifactId will be used as the project name. -->
+    <name>example-app</name>
+
+    <!-- The <url> tag links to the project so other tools can parse the project’s link -->
+    <url>http://www.example.org</url>
+
+    <properties>
+        <!-- The <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> specifies the encoding for resources like .properties and text files.
+        Maven will use the operating system’s default encoding if it’s not specified which could lead to incompatibility across systems -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- The <maven.compiler.source>11</maven.compiler.source> tag specifies the minimum Java version required for the project -->
+        <maven.compiler.source>17</maven.compiler.source>
+
+        <!-- The <maven.compiler.target>11</maven.compiler.target> tag specifies what version the project is expected to run on. -->
+        <maven.compiler.target>17</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+        <!-- We can add dependencies using coordinates of the external resource -->
+        <dependency>
+            <!-- Notice that we’re using the groupId, artifactId, and version tags to uniquely identify which external resource we want to add to our project.
+            Maven will automatically download and set up JUnit and we’ll have access to all JUnit methods in our test file -->
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.8.2</version>
+            <!-- The scope tag defines at what points in the program’s execution they’ll be available.
+            For example, the test scope means that the dependencies will only be used for testing and not for compilation or during runtime -->
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <!-- The <build> tag is used for specifying the project directory structure and managing plugins. -->
+    <build>
+        <!--  A plugin simply consists of code that performs various tasks during the build process.
+        We’ve only added the maven-compiler-plugin to this project which is used to compile Java sources. -->
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.10.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <!-- Add the `maven-jar-plugin`, which will create the JAR file. -->
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.2</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <!-- Add configuration to tell Java which .class file to run in the JAR file. In our case, it will be the App class -->
+                            <mainClass>org.example.App</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <!-- Maven can’t run the tests by itself. It requires the maven-surefire-plugin to run tests -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M7</version>
+            </plugin>
+        </plugins>
+    </build>
+</project>
